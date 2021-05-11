@@ -5,13 +5,13 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>MailLogin</title>
+<title>Mail Login</title>
 </head>
 <body>
 	<div align="center">
 		<h1>Connect to the Mail</h1>
 		
-		<form:form action="mail" modelAttribute="connectionModel" method="GET">
+		<form:form action="loginProcess" modelAttribute="connectionModel" method="POST">
 			<table border="1">
 				<tr>
 					<td>Server:</td>

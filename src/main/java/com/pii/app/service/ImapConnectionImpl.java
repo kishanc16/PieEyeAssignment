@@ -64,7 +64,7 @@ public class ImapConnectionImpl implements ImapConnection {
 			for (int i = 0; i < messages.length; i++) {
 				Message message = messages[i];
 				EmailModel emailModel = new EmailModel();
-				System.out.println("--------------------------------");
+				LOGGER.info("--------------------------------");
 				long messageId = i + 1;
 				Address from = message.getFrom()[0];
 				String subject = message.getSubject();
@@ -83,15 +83,16 @@ public class ImapConnectionImpl implements ImapConnection {
 				emailModel.setBody(body);
 				hmap.put(messageId, emailModel);
 
-				System.out.println("MESSAGE #" + (i + 1));
-				System.out.println("Message: " + message.toString());
-				System.out.println("Message header: " + Arrays.toString(message.getFrom()));
-				System.out.println("Received Date: " + message.getReceivedDate());
-				System.out.println("From: " + message.getFrom()[0]);
-				System.out.println("Subject: " + message.getSubject());
-				System.out.println("Body: " + body);
+				LOGGER.info("MESSAGE #" + messageId);
+				LOGGER.info("Message header: " + Arrays.toString(message.getFrom()));
+				LOGGER.info("Received Date: " + receivedDate);
+				LOGGER.info("From: " + from.toString());
+				LOGGER.info("Subject: " + subject);
+				//System.out.println("Body: " + body);
 			}
 			inboxFolder.close();
+		}else {
+			LOGGER.info("OOPs!!! Something went wrong");
 		}
 		return hmap;
 	}
@@ -101,7 +102,7 @@ public class ImapConnectionImpl implements ImapConnection {
 		if (content instanceof Multipart) {
 			Multipart multipart = (Multipart) content;
 			int parts = multipart.getCount();
-			for (int i = 0; i < parts; i++) {
+			for (int i = 1; i < parts; i++) {
 				MimeBodyPart part = (MimeBodyPart) multipart.getBodyPart(i);
 				// System.out.println("Part: "+part.toString());
 				message += part.getContent();

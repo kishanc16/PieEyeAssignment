@@ -2,20 +2,14 @@ package com.pii.app.controllers;
 
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.mail.MessagingException;
-import javax.mail.Store;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.pii.app.config.ImapConfig;
@@ -25,56 +19,57 @@ import com.pii.app.service.ImapConnection;
 
 @Controller
 public class MailController {
-	
+
 	@Autowired
 	ImapConnection imapConnection;
 	@Autowired
 	ImapConfig imapConfig;
-	Map<Long,EmailModel> listOfMail = null;
-//	@RequestMapping("/home/")
-//	public String home() {
-//		System.out.println("mail controller----");
-//		//imapConnection.read();
-//		return "home";
-//	}
-	
-	//@ResponseBody
+	Map<Long, EmailModel> listOfMail = null;
+
 	@GetMapping("/mail")
-	public String showAllMail(@ModelAttribute("connectionModel")ConnectionModel connectionModel, Model m) throws MessagingException {
+	public ModelAndView showAllMail(@ModelAttribute("connectionModel") ConnectionModel connectionModel,
+			ModelAndView model) throws MessagingException {
 		System.out.println("Get Mail called .... ");
-		listOfMail = imapConnection.readAllMail(connectionModel);
-		m.addAttribute("listOfMail", listOfMail.entrySet());
-		return "list-of-mail";
+		model.addObject("listOfMail", listOfMail.entrySet());
+		model.setViewName("list-of-mail");
+		return model;
 	}
+
 	@GetMapping("/mail/{mailId}")
-	public String showMail(@PathVariable("mailId") String mailId, Model m) {
-		EmailModel email=  listOfMail.get(Long.parseLong(mailId));
-		m.addAttribute("email", email);
-		return "email-page";
+	public ModelAndView showMail(@PathVariable("mailId") String mailId) {
+		EmailModel email = listOfMail.get(Long.parseLong(mailId));
+		ModelAndView model = new ModelAndView();
+		;
+		if (email != null) {
+			model.addObject("email", email);
+			model.setViewName("email-page");
+		} else {
+			model.addObject("message", "Data not exists.....");
+			model.setViewName("error");
+		}
+		return model;
 	}
+
 	@GetMapping("/login")
-	public String showLogin(Model m) {
+	public ModelAndView showLogin(ModelAndView model) {
 		System.out.println("My login called....");
-		ConnectionModel connectionModel= new ConnectionModel();
-		m.addAttribute("connectionModel", connectionModel);
-		return "mail-login";
+		listOfMail = null;
+		ConnectionModel connectionModel = new ConnectionModel();
+		model.addObject("connectionModel", connectionModel);
+		model.setViewName("mail-login");
+		return model;
 	}
-	
-//	@PostMapping("/loginProcess")
-//	public ModelAndView loginProcess(@ModelAttribute("connectionModel")ConnectionModel connectionModel) {
-//		System.out.println("My loginProcess called....");
-//		ModelAndView model = null;
-//		Store store = imapConfig.setUpConnection(connectionModel);
-//		if(store != null) {
-//			System.out.println("Login Successfully");
-//			model = new ModelAndView("mail");
-//			
-//		}else {
-//			model = new ModelAndView("login");
-//			model.addObject("connectionModel", connectionModel);
-//			model.addObject("message", "Invalid credentials!!");
-//		}
-//		return model;
-//	}
-	
+
+	@PostMapping("/loginProcess")
+	public String loginProcess(@ModelAttribute("connectionModel") ConnectionModel connectionModel)
+			throws MessagingException {
+		System.out.println("My loginProcess called....");
+		ModelAndView model = new ModelAndView();
+		listOfMail = imapConnection.readAllMail(connectionModel);
+		if (listOfMail != null) {
+			model.addObject("connectionModel", connectionModel);
+		}
+		return "redirect:/mail";
+	}
+
 }
