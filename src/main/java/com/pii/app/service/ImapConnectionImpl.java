@@ -48,11 +48,21 @@ public class ImapConnectionImpl implements ImapConnection {
 	Logger LOGGER = LoggerFactory.getLogger(ImapConnectionImpl.class);
 	
 	@Override
-	public Map<Long, EmailModel> readAllMail(ConnectionModel connectionModel) throws MessagingException {
+	public Map<Long, EmailModel> readAllMail(String server, String port, String protocol, String username, String password) throws MessagingException {
 		Folder inboxFolder;
 		Store store;
 		Map<Long, EmailModel> hmap = new HashMap<>();
+		
+		ConnectionModel connectionModel = new ConnectionModel();
+		connectionModel.setServer(server);
+		connectionModel.setPort(port);
+		connectionModel.setProtocol(protocol);
+		connectionModel.setUsername(username);
+		connectionModel.setPassword(password);
+		System.out.println("Read : " + connectionModel.toString());
+		
 		store = imapConfig.setUpConnection(connectionModel);
+
 		if (store != null) {
 			
 			inboxFolder = store.getFolder("INBOX");

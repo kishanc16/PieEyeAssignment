@@ -3,6 +3,7 @@ package com.pii.app.controllers;
 import java.util.Map;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +12,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.pii.app.model.ConnectionModel;
 import com.pii.app.model.EmailModel;
@@ -27,12 +31,18 @@ public class MailController {
 
 	@GetMapping("/mail")
 	public ModelAndView showAllMail(@ModelAttribute("connectionModel") ConnectionModel connectionModel,
-			ModelAndView model) throws MessagingException {
+			HttpServletRequest request, ModelAndView model) throws MessagingException {
 		LOGGER.info("showAllMail method called.... ");
-
+				
 		System.out.println(connectionModel.toString());
-		listOfMail = imapConnection.readAllMail(connectionModel);
-		model.addObject("listOfMail", listOfMail.entrySet());
+		String server = connectionModel.getServer();
+		String port  = connectionModel.getPort();
+		String protocol = connectionModel.getProtocol();
+		String username	= connectionModel.getUsername();
+		String password	= connectionModel.getPassword();
+		 
+		listOfMail = imapConnection.readAllMail(server,port,protocol,username,password);
+		model.addObject("listOfMail", listOfMail.entrySet()); 
 		model.setViewName("list-of-mail");
 		return model;
 	}
@@ -62,16 +72,13 @@ public class MailController {
 		return model;
 	}
 
-//	@PostMapping("/loginProcess")
-//	public RedirectView loginProcess(@ModelAttribute("connectionModel") ConnectionModel connectionModel) throws MessagingException {
-//		System.out.println("My loginProcess called....");
-//		this.connection = connectionModel;
-//		// ModelAndView model = new ModelAndView();
-//		// listOfMail = imapConnection.readAllMail(connectionModel);
-//		// m.addAttribute("connectionModel", connectionModel);
-//		// model.addObject("connectionModel", connectionModel);
-//
-//		return new RedirectView("/mail", true);
-//	}
+	@PostMapping("/login")
+	public RedirectView loginProcess(@ModelAttribute("connectionModel") ConnectionModel connectionModel,
+			HttpServletRequest request,RedirectAttributes redirectAttrs) throws MessagingException {
+		System.out.println("My loginProcess called....");
+		redirectAttrs.addFlashAttribute("connectionModel", connectionModel);
+		
+		return new RedirectView("/mail", true);
+	}
 
 }

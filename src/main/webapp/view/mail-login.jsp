@@ -11,7 +11,7 @@
 	<div align="center">
 		<h1>Connect to the Mail</h1>
 		
-		<form:form action="mail" modelAttribute="connectionModel" method="GET">
+		<form:form action="login" modelAttribute="connectionModel" method="POST">
 			<table border="1">
 				<tr>
 					<td>Server:</td>

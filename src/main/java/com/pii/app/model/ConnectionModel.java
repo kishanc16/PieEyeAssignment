@@ -2,7 +2,7 @@ package com.pii.app.model;
 
 public class ConnectionModel {
 	
-	private String server ="imap.gmail.com";
+	private String server ="outlook.office365.com";
 	private String port ="993";
 	private String protocol="imaps";
 	private String username;

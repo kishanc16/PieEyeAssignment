@@ -9,6 +9,6 @@ import com.pii.app.model.EmailModel;
 
 public interface ImapConnection {
 
-	Map<Long,EmailModel> readAllMail(ConnectionModel connectionModel) throws MessagingException;
+	Map<Long,EmailModel> readAllMail(String server, String port, String protocol, String username, String password) throws MessagingException;
 
 }

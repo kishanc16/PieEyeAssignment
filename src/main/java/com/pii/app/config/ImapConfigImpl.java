@@ -2,6 +2,7 @@ package com.pii.app.config;
 
 import java.util.Properties;
 
+import javax.annotation.PostConstruct;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
@@ -9,6 +10,7 @@ import javax.mail.Store;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.pii.app.model.ConnectionModel;
