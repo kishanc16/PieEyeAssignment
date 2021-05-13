@@ -92,7 +92,7 @@ public class ImapConnectionImpl implements ImapConnection {
 			}
 			inboxFolder.close();
 		}else {
-			LOGGER.info("OOPs!!! Something went wrong");
+			LOGGER.info("Oops!!! Something went wrong");
 		}
 		return hmap;
 	}
