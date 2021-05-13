@@ -26,10 +26,10 @@
 		 	<td>${map.getValue().from}</td>
 		 	<td>${map.getValue().subject}</td>
 		 	<td>${map.getValue().receivedDate}</td>
-		 	<td><a href="mail/${map.getValue().mailId}">Details</a></td>
+		 	<td><a href="mail/${username}/${map.getValue().mailId}">Details</a></td>
 		 </tr>
 		 </c:forEach>
-		 
+
 		</table>
 	</div>
 </body>

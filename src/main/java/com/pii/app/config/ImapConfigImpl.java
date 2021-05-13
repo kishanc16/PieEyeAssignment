@@ -12,11 +12,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.pii.app.model.ConnectionModel;
 
-@Component
+@Scope("prototype")
 public class ImapConfigImpl implements ImapConfig {
 	private Logger LOGGER = LoggerFactory.getLogger(ImapConfigImpl.class);
 
@@ -36,7 +37,7 @@ public class ImapConfigImpl implements ImapConfig {
 			}
 		});
 		LOGGER.info("Session created........");
-
+		System.out.println(connectionModel.getUsername() +" "+ connectionModel.getPassword());
 		store = emailSession.getStore(connectionModel.getProtocol());
 		store.connect(connectionModel.getServer(), connectionModel.getUsername(), connectionModel.getPassword());
 		LOGGER.info("Connection established.......");

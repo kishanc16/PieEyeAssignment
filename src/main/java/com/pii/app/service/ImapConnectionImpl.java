@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.mail.Address;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.internet.MimeBodyPart;
 
@@ -41,10 +44,34 @@ public class ImapConnectionImpl implements ImapConnection {
 //    String port;
 	Logger LOGGER = LoggerFactory.getLogger(ImapConnectionImpl.class);
 	
+	public Store setUpConnection(ConnectionModel connectionModel) throws MessagingException {
+		Properties properties = new Properties();
+		Store store = null;
+
+		properties.put("mail.imap.host", connectionModel.getServer());
+		properties.put("mail.imap.port", connectionModel.getPort());
+		properties.put("mail.store.protocol", connectionModel.getProtocol());
+		// Session emailSession = Session.getDefaultInstance(properties);
+		
+		Session emailSession = Session.getDefaultInstance(properties, new javax.mail.Authenticator() {
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(connectionModel.getUsername(), connectionModel.getPassword());
+			}
+		});
+		LOGGER.info("Session created........");
+		System.out.println(connectionModel.getUsername() +" "+ connectionModel.getPassword());
+		store = emailSession.getStore(connectionModel.getProtocol());
+		store.connect(connectionModel.getServer(), connectionModel.getUsername(), connectionModel.getPassword());
+		LOGGER.info("Connection established.......");
+
+		return store;
+	}
+	
 	@Override
 	public Map<Long, EmailModel> readAllMail(String server, String port, String protocol, String username, String password) throws MessagingException {
-		Folder inboxFolder;
-		Store store;
+		Folder inboxFolder=null;
+		Store store = null;
+		
 		Map<Long, EmailModel> hmap = new HashMap<>();
 		
 		ConnectionModel connectionModel = new ConnectionModel();
@@ -53,10 +80,7 @@ public class ImapConnectionImpl implements ImapConnection {
 		connectionModel.setProtocol(protocol);
 		connectionModel.setUsername(username);
 		connectionModel.setPassword(password);
-		
-		ImapConfigImpl imapConfig = new ImapConfigImpl();
-		store = imapConfig.setUpConnection(connectionModel);
-
+		store = setUpConnection(connectionModel);
 		if (store != null) {
 			
 			inboxFolder = store.getFolder("INBOX");

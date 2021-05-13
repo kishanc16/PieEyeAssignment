@@ -14,7 +14,8 @@
 			<font color="red">Oops!!! Something went wrong</font>
 		</h1>
 		<p>Message : ${message}</p>
-		
 	</div>
+	<br><br><br>
+	<a href="/login">Back to Login </a>
 </body>
 </html>
