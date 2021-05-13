@@ -1,7 +1,6 @@
 package com.pii.app.service;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,21 +19,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pii.app.config.ImapConfig;
+import com.pii.app.config.ImapConfigImpl;
 import com.pii.app.model.ConnectionModel;
 import com.pii.app.model.EmailModel;
 
 @Service
 public class ImapConnectionImpl implements ImapConnection {
 
-	@Autowired
-	ImapConfig imapConfig;
-
-//	String server = "outlook.office365.com";
-//	int port = 993;
-//	String encryptionMethod = "TLS";
-//	String username = "pieeyecandidate@outlook.com";
-//	String password= "2021-codder#";
-
+//	@Autowired
+//	ImapConfig imapConfig;
+	
 //    @Value("${username}")
 //    String username;
 //    
@@ -59,8 +53,8 @@ public class ImapConnectionImpl implements ImapConnection {
 		connectionModel.setProtocol(protocol);
 		connectionModel.setUsername(username);
 		connectionModel.setPassword(password);
-		System.out.println("Read : " + connectionModel.toString());
 		
+		ImapConfigImpl imapConfig = new ImapConfigImpl();
 		store = imapConfig.setUpConnection(connectionModel);
 
 		if (store != null) {
@@ -94,10 +88,9 @@ public class ImapConnectionImpl implements ImapConnection {
 				hmap.put(messageId, emailModel);
 
 				LOGGER.info("MESSAGE #" + messageId);
-				LOGGER.info("Message header: " + Arrays.toString(message.getFrom()));
-				LOGGER.info("Received Date: " + receivedDate);
+				//LOGGER.info("Received Date: " + receivedDate);
 				LOGGER.info("From: " + from.toString());
-				LOGGER.info("Subject: " + subject);
+				//LOGGER.info("Subject: " + subject);
 				//System.out.println("Body: " + body);
 			}
 			inboxFolder.close();

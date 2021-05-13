@@ -12,10 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import com.pii.app.model.ConnectionModel;
 
-@Configuration
+@Component
 public class ImapConfigImpl implements ImapConfig {
 	private Logger LOGGER = LoggerFactory.getLogger(ImapConfigImpl.class);
 
