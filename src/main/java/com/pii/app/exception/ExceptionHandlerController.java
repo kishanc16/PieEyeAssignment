@@ -15,22 +15,35 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class ExceptionHandlerController {
 	private Logger LOGGER = LoggerFactory.getLogger(ExceptionHandlerController.class);
-	
-	 @ExceptionHandler(Exception.class)
-	  public ModelAndView handleError(HttpServletRequest req, Exception ex) {
-		 LOGGER.error("Request: " + req.getRequestURL() + "  raised by " + ex);
-		 ModelAndView mv = new ModelAndView();
-		 mv.addObject("message","Please contact administrator for more details...");
-		 mv.setViewName("error");
-		 return mv;
-	 }
-	 
-	 @ExceptionHandler({AuthenticationFailedException.class,MessagingException.class})
-	 public ModelAndView ImapConnectionException(Exception ex) {
-		 LOGGER.error("Exception: " + ex.getLocalizedMessage());
-		 ModelAndView mv = new ModelAndView();
-		 mv.addObject("message","Authenication failed!! Please check credentials...." );
-		 mv.setViewName("error");
-		 return mv;
-	 }
+
+	/**
+	 * Handling IOException, Null exception and other all exception
+	 * 
+	 * @param req
+	 * @param ex
+	 * @return
+	 */
+	@ExceptionHandler(Exception.class)
+	public ModelAndView handleError(HttpServletRequest req, Exception ex) {
+		LOGGER.error("Request: " + req.getRequestURL() + "  raised by " + ex);
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("message", "Please contact administrator for more details...");
+		mv.setViewName("error");
+		return mv;
+	}
+
+	/**
+	 * Handling Authenication exception and exception raised by Javax.mail
+	 * 
+	 * @param ex
+	 * @return
+	 */
+	@ExceptionHandler({ AuthenticationFailedException.class, MessagingException.class })
+	public ModelAndView ImapConnectionException(Exception ex) {
+		LOGGER.error("Exception: " + ex.getLocalizedMessage());
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("message", "Authenication failed!! Please check credentials....");
+		mv.setViewName("error");
+		return mv;
+	}
 }

@@ -18,32 +18,21 @@ import javax.mail.internet.MimeBodyPart;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.pii.app.config.ImapConfig;
-import com.pii.app.config.ImapConfigImpl;
 import com.pii.app.model.ConnectionModel;
 import com.pii.app.model.EmailModel;
 
 @Service
 public class ImapConnectionImpl implements ImapConnection {
 
-//	@Autowired
-//	ImapConfig imapConfig;
-	
-//    @Value("${username}")
-//    String username;
-//    
-//    @Value("${password}")
-//    String password;
-//    
-//    @Value("${imap.server}")
-//    String server;
-//    @Value("${imap.port}")
-//    String port;
 	Logger LOGGER = LoggerFactory.getLogger(ImapConnectionImpl.class);
-	
+
+	/**
+	 * create connection using username, password, server, port and protocol return
+	 * store object
+	 */
+	@Override
 	public Store setUpConnection(ConnectionModel connectionModel) throws MessagingException {
 		Properties properties = new Properties();
 		Store store = null;
@@ -52,39 +41,37 @@ public class ImapConnectionImpl implements ImapConnection {
 		properties.put("mail.imap.port", connectionModel.getPort());
 		properties.put("mail.store.protocol", connectionModel.getProtocol());
 		// Session emailSession = Session.getDefaultInstance(properties);
-		
-		Session emailSession = Session.getDefaultInstance(properties, new javax.mail.Authenticator() {
+
+		Session emailSession = Session.getInstance(properties, new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
 				return new PasswordAuthentication(connectionModel.getUsername(), connectionModel.getPassword());
 			}
 		});
-		LOGGER.info("Session created........");
-		System.out.println(connectionModel.getUsername() +" "+ connectionModel.getPassword());
+		LOGGER.info("Session created...");
+
 		store = emailSession.getStore(connectionModel.getProtocol());
 		store.connect(connectionModel.getServer(), connectionModel.getUsername(), connectionModel.getPassword());
-		LOGGER.info("Connection established.......");
+		LOGGER.info("Connection established...");
 
 		return store;
 	}
-	
+
+	/**
+	 * fetch all mail from Inbox return list of mail to controller
+	 */
 	@Override
-	public Map<Long, EmailModel> readAllMail(String server, String port, String protocol, String username, String password) throws MessagingException {
-		Folder inboxFolder=null;
+	public Map<Long, EmailModel> readAllMail(ConnectionModel connectionModel) throws MessagingException {
+		Folder inboxFolder = null;
 		Store store = null;
-		
+
 		Map<Long, EmailModel> hmap = new HashMap<>();
-		
-		ConnectionModel connectionModel = new ConnectionModel();
-		connectionModel.setServer(server);
-		connectionModel.setPort(port);
-		connectionModel.setProtocol(protocol);
-		connectionModel.setUsername(username);
-		connectionModel.setPassword(password);
+
 		store = setUpConnection(connectionModel);
+
 		if (store != null) {
-			
+
 			inboxFolder = store.getFolder("INBOX");
-			LOGGER.info("Inbox folder accessed......");
+			LOGGER.info("Inbox folder accessed...");
 			inboxFolder.open(Folder.READ_ONLY);
 
 			LOGGER.info("No of Messages : " + inboxFolder.getMessageCount());
@@ -112,13 +99,13 @@ public class ImapConnectionImpl implements ImapConnection {
 				hmap.put(messageId, emailModel);
 
 				LOGGER.info("MESSAGE #" + messageId);
-				//LOGGER.info("Received Date: " + receivedDate);
+				// LOGGER.info("Received Date: " + receivedDate);
 				LOGGER.info("From: " + from.toString());
-				//LOGGER.info("Subject: " + subject);
-				//System.out.println("Body: " + body);
+				// LOGGER.info("Subject: " + subject);
+				// System.out.println("Body: " + body);
 			}
 			inboxFolder.close();
-		}else {
+		} else {
 			LOGGER.info("Oops!!! Something went wrong");
 		}
 		return hmap;
@@ -131,7 +118,6 @@ public class ImapConnectionImpl implements ImapConnection {
 			int parts = multipart.getCount();
 			for (int i = 1; i < parts; i++) {
 				MimeBodyPart part = (MimeBodyPart) multipart.getBodyPart(i);
-				// System.out.println("Part: "+part.toString());
 				message += part.getContent();
 			}
 		}
