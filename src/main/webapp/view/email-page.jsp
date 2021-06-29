@@ -13,15 +13,15 @@
 		<table border="1">
 			<tr>
 				<td>From :</td>
-				<td>${email.from}</td>
+				<td>${mailBody.from}</td>
 			</tr>
 			<tr>
 				<td>Subject:</td>
-				<td>${email.subject}</td>
+				<td>${mailBody.subject}</td>
 			</tr>
 			<tr>
 				<td>Body:</td>
-				<td>${email.body}</td>
+				<td>${mailBody.body}</td>
 			</tr>
 		</table>
 	</div>

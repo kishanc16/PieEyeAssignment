@@ -9,11 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
@@ -62,21 +64,23 @@ public class MailController {
 	 * @param mailId   mailId from list of mail
 	 * @return specific mail from list of mail
 	 */
-	@GetMapping("mail/{username}/{mailId}")
-	public ModelAndView showMail(@PathVariable("username") String username, @PathVariable("mailId") long mailId) {
+	//@GetMapping("mail/{username}/{mailId}")
+	@GetMapping("mail/details")
+	public ModelAndView showMail(HttpServletRequest request) {
 		LOGGER.info("showMail method called...");
-
-		Map<Long, EmailModel> map = usersMail.get(username);
-		EmailModel emailModel = map.get(mailId);
+		EmailModel emailModel = (EmailModel) request.getAttribute("mailBody");
+		System.out.println(emailModel);
+//		Map<Long, EmailModel> map = usersMail.get(username);
+//		EmailModel emailModel = map.get(mailId);
 		ModelAndView model = new ModelAndView();
-		if (emailModel != null) {
-
-			model.addObject("email", emailModel);
-			model.setViewName("email-page");
-		} else {
-			model.addObject("message", "Data not exists");
-			model.setViewName("error");
-		}
+//		if (emailModel != null) {
+//
+//			model.addObject("email", emailModel);
+//			model.setViewName("email-page");
+//		} else {
+//			model.addObject("message", "Data not exists");
+//			model.setViewName("error");
+//		}
 
 		return model;
 	}

@@ -26,8 +26,12 @@
 					<td>${map.getValue().from}</td>
 					<td>${map.getValue().subject}</td>
 					<td>${map.getValue().receivedDate}</td>
-					<td><a href="mail/${username}/${map.getValue().mailId}">Details</a></td>
+					<td><a href="mail/details">Details</a>
+						<c:set var="mailBody" value="${map.getValue()}" scope="request"/>
+					</td>
+					<!-- <td><a href="mail/${username}/${map.getValue().mailId}">Details</a></td> -->
 				</tr>
+
 			</c:forEach>
 
 		</table>
